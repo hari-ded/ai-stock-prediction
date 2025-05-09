@@ -1,7 +1,4 @@
-# Stock Price Prediction using Time Series Analysis and AI
-# Cracking the Market Code with AI-Driven Stock Price Prediction
-
-# Step 1: Import Required Libraries
+# ibraries Required
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -12,11 +9,11 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 
-# Step 2: Load Data
+# Data Loading
 ticker = 'AAPL'
 data = yf.download(ticker, start='2020-01-01', end='2023-12-31')
 
-# Step 3: Exploratory Data Analysis
+# EDA
 plt.figure(figsize=(12, 5))
 plt.plot(data['Close'], label='Closing Price')
 plt.title(f'{ticker} Closing Price Over Time')
@@ -27,25 +24,25 @@ plt.grid()
 plt.savefig("images/closing_price_trend.png")
 plt.close()
 
-# Correlation Heatmap
+# Mapping
 plt.figure(figsize=(8, 6))
 sns.heatmap(data.corr(), annot=True, cmap='coolwarm')
 plt.title('Feature Correlation Heatmap')
 plt.savefig("images/correlation_heatmap.png")
 plt.close()
 
-# Step 4: Feature Engineering
+
 data['MA10'] = data['Close'].rolling(window=10).mean()
 data['MA50'] = data['Close'].rolling(window=50).mean()
 data['Lag1'] = data['Close'].shift(1)
 
 data.dropna(inplace=True)
 
-# Step 5: Data Preprocessing
+# Processing of Data
 scaler = MinMaxScaler()
 scaled_data = scaler.fit_transform(data[['Close', 'MA10', 'MA50', 'Lag1']])
 
-# Step 6: Create Sequences
+# Sequences
 def create_dataset(dataset, time_step=60):
     X, y = [], []
     for i in range(len(dataset) - time_step):
@@ -61,7 +58,7 @@ split = int(0.8 * len(X))
 X_train, y_train = X[:split], y[:split]
 X_test, y_test = X[split:], y[split:]
 
-# Step 7: Build LSTM Model
+# LSTM
 model = Sequential()
 model.add(LSTM(50, return_sequences=True, input_shape=(time_step, X.shape[2])))
 model.add(LSTM(50))
@@ -69,7 +66,7 @@ model.add(Dense(1))
 model.compile(optimizer='adam', loss='mean_squared_error')
 model.fit(X_train, y_train, epochs=20, batch_size=32, verbose=1)
 
-# Step 8: Evaluate the Model
+# Model Evaluation
 predictions = model.predict(X_test)
 y_test_rescaled = scaler.inverse_transform(np.hstack((y_test.reshape(-1, 1),
                                                       np.zeros((len(y_test), 3)))))[:, 0]
