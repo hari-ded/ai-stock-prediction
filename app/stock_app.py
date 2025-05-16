@@ -58,6 +58,9 @@ if st.button("Predict"):
         st.pyplot(fig)
 
         # Output
+        next_price = float(next_price)  # force to regular float
+        rmse = float(mean_squared_error(y_test, preds, squared=False))  # convert RMSE to float
+
         st.success(f"Predicted Next Closing Price: **${next_price:.2f}**")
-        rmse = mean_squared_error(y_test, preds, squared=False)
         st.metric("Model RMSE", f"${rmse:.2f}")
+
