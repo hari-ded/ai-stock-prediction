@@ -41,8 +41,10 @@ if st.button("Predict"):
         preds = model.predict(X_test)
 
         # Predict next day
-        next_input = np.array([[data['Close'].iloc[-1]]])
+        last_close = float(data['Close'].iloc[-1])
+        next_input = np.array([last_close]).reshape(1, -1)  # Ensures 2D
         next_price = model.predict(next_input)[0]
+
 
         # Graph
         fig, ax = plt.subplots(figsize=(10, 5))
